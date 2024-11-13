@@ -63,52 +63,6 @@ const AdminDashboard = () => {
     setCurrentPage(page);
   };
 
-  // Function to create a user
-  const createUser = async (userData) => {
-    try {
-      const response = await axios.post(`${API_URL}/users`, userData, {
-        headers: {
-          Authorization: `Bearer ${API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      fetchUsers(); // Re-fetch users after creating one
-      return response.data;
-    } catch (error) {
-      console.error('Error creating user:', error);
-    }
-  };
-
-  // Function to create an admin
-  const createAdmin = async (adminData) => {
-    try {
-      const response = await axios.post(`${API_URL}/admins`, adminData, {
-        headers: {
-          Authorization: `Bearer ${API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      return response.data;
-    } catch (error) {
-      console.error('Error creating admin:', error);
-    }
-  };
-
-  // Function to create a courier
-  const createCourier = async (courierData) => {
-    try {
-      const response = await axios.post(`${API_URL}/couriers`, courierData, {
-        headers: {
-          Authorization: `Bearer ${API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      return response.data;
-    } catch (error) {
-      console.error('Error creating courier:', error);
-    }
-  };
-
   return (
     <div>
       <h2>Admin Dashboard</h2>

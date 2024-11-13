@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import BaseFormElement from '../BaseFormElement';
 import { useNavigate } from 'react-router-dom';
 
 const AdminForm = () => {
@@ -25,27 +24,54 @@ const AdminForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        try {
-            const response = await fetch('https://crudapi.co.uk/api/v1/{data_type}' , {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(values),
-              });
-            //   console.log('Submitting values:', values);
+        const url = 'https://crudapi.co.uk/api/v1/admins';  // URL endpoint for creating admin
 
+        try {
+            // Log values for debugging
+            console.log('Submitting values:', values);
+
+            // Prepare the data to send to the API
+            const formData = new FormData();
+            Object.keys(values).forEach((key) => {
+                formData.append(key, values[key]);
+            });
+
+            // Send the POST request
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', 
+                    // 'Authorization': `Bearer ${yourToken}`,
+                },
+                body: JSON.stringify({
+                    firstName: values.firstName,
+                    lastName: values.lastName,
+                    pid: values.pid,
+                    phoneNumber: values.phoneNumber,
+                    email: values.email,
+                    password: values.password,
+                    // profileImage is optional, check if it's present
+                    profileImage: values.profileImage,
+                }),
+            });
+
+            // Parse the response data
+            const data = await response.json();
+
+            // Handle unsuccessful registration
             if (!response.ok) {
-                throw new Error('Registration failed!');
+                setErrors({ form: data.message || 'Registration failed! Please try again.' });
+                return;
             }
 
-            const data = await response.json();
+            // If successful, store the token and navigate to the dashboard
             localStorage.setItem('token', data.token);
             navigate('/admin-dashboard');
         } catch (error) {
-            console.error(error);
+            console.error('Error submitting registration:', error);
             setErrors({ form: 'Registration failed. Please try again.' });
         }
     };
-            // console.log('Response status:', response.status);
 
     return (
         <form
@@ -85,7 +111,7 @@ const AdminForm = () => {
                 type="submit"
                 className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200 mt-6"
             >
-                Registration
+                Register
             </button>
         </form>
     );
